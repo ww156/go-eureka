@@ -17,7 +17,10 @@ func TestRegisterApp(t *testing.T) {
 		StatusPageUrl:    "http://" + ip + "/status",
 		HomePageUrl:      "http://" + ip,
 		Status:           "UP",
-		DataCenterInfo:   &DataCenterInfo{Name: "MyOwn"},
+		DataCenterInfo: &DataCenterInfo{
+			Name:  "MyOwn",
+			Class: "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+		},
 	}
 
 	serverUrls := []string{"http://localhost:8761/eureka"}

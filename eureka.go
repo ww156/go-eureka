@@ -35,18 +35,7 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 	if len(urls) == 0 {
 		return errors.New("missing eureka url.")
 	}
-	// Instance数据完善
-	instance.InstanceId = instance.Id()
-	leaseInfo := instance.LeaseInfo
-	if leaseInfo == nil {
-		leaseInfo = &LeaseInfo{}
-	}
-	if leaseInfo.RenewalIntervalInSecs == 0 {
-		leaseInfo.DurationInSecs = 30
-	}
-	if leaseInfo.DurationInSecs == 0 {
-		leaseInfo.DurationInSecs = 90
-	}
+	instance.Init()
 	// Instance数据构建
 	app := App{
 		Application: instance,
@@ -55,7 +44,7 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", urls[0]+"/"+instance.App, bytes.NewReader(data))
+	req, err := http.NewRequest("POST", urls[0]+"/apps/"+instance.App, bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
