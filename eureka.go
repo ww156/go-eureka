@@ -80,10 +80,14 @@ func (e *Eureka) SendHeartBeat(appid, instanceid string, duration time.Duration)
 					panic(err)
 				}
 				defer res.Body.Close()
-				if res.StatusCode == 404 {
-					panic(errors.New("instanceID doesn’t exist."))
-				} else if res.StatusCode != 200 {
-					panic(errors.New("unknown error."))
+				statusCode := res.StatusCode
+				if statusCode != 200 {
+					ticker.Stop()
+					if statusCode == 404 {
+						panic(errors.New("instanceID doesn’t exist."))
+					} else {
+						panic(errors.New("unknown error."))
+					}
 				}
 			}
 		}
