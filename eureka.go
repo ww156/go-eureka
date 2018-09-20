@@ -30,21 +30,21 @@ func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 }
 
 // 注册实例
-func (e *Eureka) RegisterInstane(instance *Instance) error {
+func (e *Eureka) RegisterInstane(i *Instance) error {
 	urls := e.ServiceUrls
 	if len(urls) == 0 {
 		return errors.New("missing eureka url.")
 	}
-	instance.Init()
+	i.Init()
 	// Instance数据构建
 	app := App{
-		Instance: instance,
+		Instance: i,
 	}
 	data, err := json.Marshal(&app)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", urls[0]+"/apps/"+instance.App, bytes.NewReader(data))
+	req, err := http.NewRequest("POST", urls[0]+"/apps/"+i.App, bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 }
 
 // 发送心跳
-func (e *Eureka) SendHeartBeat(appid, instanceid string, duration time.Duration) {
+func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 	go func() {
 		ticker := time.NewTicker(duration)
 		urls := e.ServiceUrls
@@ -71,7 +71,7 @@ func (e *Eureka) SendHeartBeat(appid, instanceid string, duration time.Duration)
 		for {
 			select {
 			case <-ticker.C:
-				req, err := http.NewRequest("PUT", urls[0]+"/apps/"+appid+"/"+instanceid, nil)
+				req, err := http.NewRequest("PUT", urls[0]+"/apps/"+i.App+"/"+i.InstanceId, nil)
 				if err != nil {
 					panic(err)
 				}
@@ -82,9 +82,9 @@ func (e *Eureka) SendHeartBeat(appid, instanceid string, duration time.Duration)
 				defer res.Body.Close()
 				statusCode := res.StatusCode
 				if statusCode != 200 {
-					ticker.Stop()
 					if statusCode == 404 {
-						panic(errors.New("instanceID doesn’t exist."))
+						e.RegisterInstane(i)
+						//panic(errors.New("instanceID doesn’t exist."))
 					} else {
 						panic(errors.New("unknown error."))
 					}

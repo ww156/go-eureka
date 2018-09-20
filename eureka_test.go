@@ -36,7 +36,7 @@ func TestRegisterApp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	e.SendHeartBeat(app, ins.InstanceId, time.Second*20)
+	e.SendHeartBeat(&ins, time.Second*20)
 	t.Log("register service success.")
 	for {
 	}
