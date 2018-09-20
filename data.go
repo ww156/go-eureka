@@ -7,22 +7,23 @@ type App struct {
 }
 
 type Instance struct {
-	InstanceId           string                 `xml:"instanceId" json:"instanceId"`
-	HostName             string                 `xml:"hostName" json:"hostName"`
-	App                  string                 `xml:"app" json:"app"`
-	IPAddr               string                 `xml:"ipAddr" json:"ipAddr"`
-	VipAddress           string                 `xml:"vipAddress" json:"vipAddress"`
-	SecureVipAddress     string                 `xml:"secureVipAddress" json:"secureVipAddress"`
-	Status               string                 `xml:"status" json:"status"`
-	Port                 *Port                  `xml:"port" json:"port"`
-	SecurePort           *Port                  `xml:"securePort" json:"securePort"`
-	HomePageUrl          string                 `xml:"homePageUrl" json:"homePageUrl"`
-	StatusPageUrl        string                 `xml:"statusPageUrl" json:"statusPageUrl"`
-	HealthCheckUrl       string                 `xml:"healthCheckUrl" json:"healthCheckUrl"`
-	SecureHealthCheckUrl string                 `xml:"secureHealthCheckUrl" json:"secureHealthCheckUrl"`
-	DataCenterInfo       *DataCenterInfo        `xml:"dataCenterInfo" json:"dataCenterInfo"`
-	LeaseInfo            *LeaseInfo             `xml:"leaseInfo" json:"leaseInfo"`
-	Metadata             map[string]interface{} `xml:"metadata" json:"metadata"`
+	InstanceId                    string                 `xml:"instanceId" json:"instanceId"`
+	HostName                      string                 `xml:"hostName" json:"hostName"`
+	App                           string                 `xml:"app" json:"app"`
+	IPAddr                        string                 `xml:"ipAddr" json:"ipAddr"`
+	VipAddress                    string                 `xml:"vipAddress" json:"vipAddress"`
+	SecureVipAddress              string                 `xml:"secureVipAddress" json:"secureVipAddress"`
+	Status                        string                 `xml:"status" json:"status"`
+	Port                          *Port                  `xml:"port" json:"port"`
+	SecurePort                    *Port                  `xml:"securePort" json:"securePort"`
+	HomePageUrl                   string                 `xml:"homePageUrl" json:"homePageUrl"`
+	StatusPageUrl                 string                 `xml:"statusPageUrl" json:"statusPageUrl"`
+	HealthCheckUrl                string                 `xml:"healthCheckUrl" json:"healthCheckUrl"`
+	SecureHealthCheckUrl          string                 `xml:"secureHealthCheckUrl" json:"secureHealthCheckUrl"`
+	DataCenterInfo                *DataCenterInfo        `xml:"dataCenterInfo" json:"dataCenterInfo"`
+	LeaseInfo                     *LeaseInfo             `xml:"leaseInfo" json:"leaseInfo"`
+	Metadata                      map[string]interface{} `xml:"metadata" json:"metadata"`
+	IsCoordinatingDiscoveryServer bool                   `xml:"isCoordinatingDiscoveryServer" json:"isCoordinatingDiscoveryServer"`
 }
 
 type Port struct {
@@ -55,6 +56,8 @@ func (i *Instance) Id() string {
 func (i *Instance) Init() {
 	// InstanceId
 	i.InstanceId = i.Id()
+	i.VipAddress = i.App
+	i.SecureVipAddress = i.App
 	// LeaseInfo
 	leaseInfo := i.LeaseInfo
 	if leaseInfo == nil {

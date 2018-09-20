@@ -1,21 +1,23 @@
 package eureka
 
 import (
+	"strconv"
 	"testing"
 )
 
 func TestRegisterApp(t *testing.T) {
 	ip := "localhost"
+	port := 80
 	ins := Instance{
 		HostName:         ip,
 		App:              "goaaa",
-		Port:             &Port{Port: 80, Enable: true},
+		Port:             &Port{Port: port, Enable: true},
 		IPAddr:           ip,
 		VipAddress:       ip,
 		SecureVipAddress: ip,
-		HealthCheckUrl:   "http://" + ip + "/health",
-		StatusPageUrl:    "http://" + ip + "/status",
-		HomePageUrl:      "http://" + ip,
+		HealthCheckUrl:   "http://" + ip + ":" + strconv.Itoa(port) + "/health",
+		StatusPageUrl:    "http://" + ip + ":" + strconv.Itoa(port) + "/status",
+		HomePageUrl:      "http://" + ip + ":" + strconv.Itoa(port),
 		Status:           "UP",
 		DataCenterInfo: &DataCenterInfo{
 			Name:  "MyOwn",
