@@ -3,14 +3,16 @@ package eureka
 import (
 	"strconv"
 	"testing"
+	"time"
 )
 
 func TestRegisterApp(t *testing.T) {
+	app := "goaaa"
 	ip := "localhost"
 	port := 80
 	ins := Instance{
 		HostName:         ip,
-		App:              "goaaa",
+		App:              app,
 		Port:             &Port{Port: port, Enable: true},
 		IPAddr:           ip,
 		VipAddress:       ip,
@@ -34,5 +36,8 @@ func TestRegisterApp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	e.SendHeartBeat(app, ins.InstanceId, time.Second*20)
 	t.Log("register service success.")
+	for {
+	}
 }

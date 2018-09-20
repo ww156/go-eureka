@@ -71,7 +71,7 @@ func (e *Eureka) SendHeartBeat(appid, instanceid string, duration time.Duration)
 		for {
 			select {
 			case <-ticker.C:
-				req, err := http.NewRequest("PUT", urls[0]+"/"+appid+"/"+instanceid, nil)
+				req, err := http.NewRequest("PUT", urls[0]+"/apps/"+appid+"/"+instanceid, nil)
 				if err != nil {
 					panic(err)
 				}
