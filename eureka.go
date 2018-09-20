@@ -38,6 +38,9 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 	// Instance数据完善
 	instance.InstanceId = instance.Id()
 	leaseInfo := instance.LeaseInfo
+	if leaseInfo == nil {
+		leaseInfo = &LeaseInfo{}
+	}
 	if leaseInfo.RenewalIntervalInSecs == 0 {
 		leaseInfo.DurationInSecs = 30
 	}
