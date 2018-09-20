@@ -1,0 +1,42 @@
+{
+  "instance": {
+    "instanceId": "118.178.230.252:gotest:9991",
+    "app": "gotest",
+    "ipAddr": "118.178.230.252",
+    "port": {
+      "$": 9991,
+      "@enabled": true
+    },
+    "securePort": {
+      "$": 433,
+      "@enabled": false
+    },
+    "homePageUrl": "http://118.178.230.252:9991/",
+    "statusPageUrl": "http://118.178.230.252:9991/status",
+    "healthCheckUrl": "http://118.178.230.252:9991/health",
+    "secureHealthCheckUrl": null,
+    "vipAddress": "gotest",
+    "secureVipAddress": "gotest",
+    "countryId": 1,
+    "dataCenterInfo": {
+      "name": "MyOwn",
+      "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo"
+    },
+    "hostName": "118.178.230.252",
+    "status": "UP",
+    "overriddenstatus": "UNKNOWN",
+    "leaseInfo": {
+      "renewalIntervalInSecs": 30,
+      "durationInSecs": 90,
+      "registrationTimestamp": 0,
+      "lastRenewalTimestamp": 0,
+      "renewalTimestamp": 0,
+      "evictionTimestamp": 0,
+      "serviceUpTimestamp": 0
+    },
+    "metadata": {
+      "@class": "java.util.Collections$EmptyMap"
+    },
+    "isCoordinatingDiscoveryServer": false
+  }
+}
