@@ -38,7 +38,7 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 	instance.Init()
 	// Instance数据构建
 	app := App{
-		Application: instance,
+		Instance: instance,
 	}
 	data, err := json.Marshal(&app)
 	if err != nil {

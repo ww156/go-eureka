@@ -3,7 +3,7 @@ package eureka
 import "strconv"
 
 type App struct {
-	Application *Instance `json:"application" xml:"application"`
+	Instance *Instance `xml:"instance" json:"instance"`
 }
 
 type Instance struct {
