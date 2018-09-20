@@ -84,7 +84,6 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 				if statusCode != 200 {
 					if statusCode == 404 {
 						e.RegisterInstane(i)
-						//panic(errors.New("instanceID doesn’t exist."))
 					} else {
 						panic(errors.New("unknown error."))
 					}
