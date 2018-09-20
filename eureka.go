@@ -55,7 +55,7 @@ func (e *Eureka) RegisterInstane(instance *Instance) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", urls[0], bytes.NewReader(data))
+	req, err := http.NewRequest("POST", urls[0]+"/"+instance.App, bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
