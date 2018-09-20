@@ -1,12 +1,11 @@
 package eureka
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestRegisterApp(t *testing.T) {
-	ip := "118.178.230.252"
+	ip := "localhost"
 	ins := Instance{
 		HostName:         ip,
 		App:              "goaaa",
@@ -21,12 +20,14 @@ func TestRegisterApp(t *testing.T) {
 		DataCenterInfo:   &DataCenterInfo{Name: "MyOwn"},
 	}
 
-	serverUrls := []string{""}
-	e := Eureka{ServiceUrls: serverUrls}
-	err := e.RegisterInstane(&ins)
+	serverUrls := []string{"http://localhost:8761/eureka"}
+	e, err := NewEureka(serverUrls, nil)
 	if err != nil {
-		fmt.Println(err)
-		t.Fatal()
+		t.Fatal(err)
+	}
+	err = e.RegisterInstane(&ins)
+	if err != nil {
+		t.Fatal(err)
 	}
 	t.Log("register service success.")
 }
