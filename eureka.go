@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -66,18 +67,18 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 		ticker := time.NewTicker(duration)
 		urls := e.ServiceUrls
 		if len(urls) == 0 {
-			panic("missing eureka url.")
+			fmt.Println("missing eureka url.")
 		}
 		for {
 			select {
 			case <-ticker.C:
 				req, err := http.NewRequest("PUT", urls[0]+"/apps/"+i.App+"/"+i.InstanceId, nil)
 				if err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 				res, err := e.Client.Do(req)
 				if err != nil {
-					panic(err)
+					fmt.Println(err)
 				}
 				defer res.Body.Close()
 				statusCode := res.StatusCode
@@ -85,7 +86,7 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 					if statusCode == 404 {
 						e.RegisterInstane(i)
 					} else {
-						panic(errors.New("unknown error."))
+						fmt.Println(errors.New("unknown error."))
 					}
 				}
 			}
