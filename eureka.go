@@ -80,7 +80,7 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 				if err != nil {
 					fmt.Println(err)
 				}
-				defer res.Body.Close()
+				res.Body.Close()
 				statusCode := res.StatusCode
 				if statusCode != 200 {
 					if statusCode == 404 {
