@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/json-iterator/go"
+	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -30,12 +33,35 @@ func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 	return eureka, nil
 }
 
+func (e *Eureka) pickServerUrl() string {
+	urls := e.ServiceUrls
+	l := len(urls)
+	if l == 0 {
+		panic(errors.New("no valid eureka server."))
+	}
+	if l == 1 {
+		if checkIp(urls[0]) {
+			return urls[0]
+		}
+		panic(errors.New("no valid eureka server."))
+	}
+	r := rand.Intn(l)
+	url := urls[r]
+	if checkIp(url) {
+		return url
+	} else {
+		for i := 0; i < l; i++ {
+			if checkIp(urls[i]) {
+				return urls[i]
+			}
+		}
+	}
+	panic(errors.New("no valid eureka server."))
+}
+
 // 注册实例
 func (e *Eureka) RegisterInstane(i *Instance) error {
-	urls := e.ServiceUrls
-	if len(urls) == 0 {
-		return errors.New("missing eureka url.")
-	}
+	url := e.pickServerUrl()
 	i.Init()
 	// Instance数据构建
 	app := App{
@@ -45,7 +71,7 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", urls[0]+"/apps/"+i.App, bytes.NewReader(data))
+	req, err := http.NewRequest("POST", url+"/apps/"+i.App, bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
@@ -92,6 +118,58 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 			}
 		}
 	}()
+}
+
+// 获取APP
+func (e *Eureka) GetApp(appid string) (*Application, error) {
+	urls := e.ServiceUrls
+	l := len(urls)
+	url := urls[rand.Intn(l)]
+	fmt.Println("GET", url+"/"+appid)
+	req, err := http.NewRequest("GET", url+"/apps/"+appid, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	resp, err := e.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(string(body))
+	resp.Body.Close()
+	result := Application{}
+	err = jsoniter.Unmarshal(body, &result)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return &result, nil
+}
+
+// 获取APP url列表
+func (e *Eureka) GetAppUrls(appid string) []string {
+	app, err := e.GetApp(appid)
+	if err != nil {
+		fmt.Println(err)
+	}
+	urls := []string{}
+	for _, ins := range app.Application.Instance {
+		if ins.Status == "UP" {
+			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
+			if checkIp(ins.HealthCheckUrl) {
+				urls = append(urls, url)
+			}
+		}
+	}
+	if len(urls) == 0 {
+		panic(errors.New("no valid url."))
+	}
+	return urls
 }
 
 // 删除实例

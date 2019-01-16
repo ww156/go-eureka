@@ -1,19 +1,20 @@
 package eureka
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
 )
 
 func TestRegisterApp(t *testing.T) {
-	app := "goaaa"
+	app := "GOAAA"
 	ip := "localhost"
 	port := 80
 	ins := Instance{
 		HostName:         ip,
 		App:              app,
-		Port:             &Port{Port: port, Enable: true},
+		Port:             &Port{Port: port, Enable: "true"},
 		IPAddr:           ip,
 		VipAddress:       ip,
 		SecureVipAddress: ip,
@@ -40,4 +41,14 @@ func TestRegisterApp(t *testing.T) {
 	t.Log("register service success.")
 	for {
 	}
+}
+
+func TestGetApp(t *testing.T) {
+	serverUrls := []string{"http://localhost:8761/eureka"}
+	e, err := NewEureka(serverUrls, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	urls := e.GetAppUrls("GOAAA")
+	fmt.Println(urls)
 }

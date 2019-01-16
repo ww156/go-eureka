@@ -2,6 +2,16 @@ package eureka
 
 import "strconv"
 
+type Application struct {
+	Application ResApp `xml:"application" json:"application"`
+}
+
+type ResApp struct {
+	Name     string     `xml:"name" json:"name"`
+	Instance []Instance `xml:"instance" json:"instance"`
+}
+
+// 注册App
 type App struct {
 	Instance *Instance `xml:"instance" json:"instance"`
 }
@@ -23,12 +33,12 @@ type Instance struct {
 	DataCenterInfo                *DataCenterInfo        `xml:"dataCenterInfo" json:"dataCenterInfo"`
 	LeaseInfo                     *LeaseInfo             `xml:"leaseInfo" json:"leaseInfo"`
 	Metadata                      map[string]interface{} `xml:"metadata" json:"metadata"`
-	IsCoordinatingDiscoveryServer bool                   `xml:"isCoordinatingDiscoveryServer" json:"isCoordinatingDiscoveryServer"`
+	IsCoordinatingDiscoveryServer interface{}            `xml:"isCoordinatingDiscoveryServer" json:"isCoordinatingDiscoveryServer"`
 }
 
 type Port struct {
-	Port   int  `json:"$"`
-	Enable bool `json:"@enabled"`
+	Port   int         `json:"$"`
+	Enable interface{} `json:"@enabled"`
 }
 
 type DataCenterInfo struct {
@@ -74,7 +84,7 @@ func (i *Instance) Init() {
 	if i.SecurePort == nil {
 		i.SecurePort = &Port{
 			Port:   443,
-			Enable: false,
+			Enable: "false",
 		}
 	}
 	// MetaData
