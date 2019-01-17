@@ -143,6 +143,9 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	fmt.Println(string(body))
 	resp.Body.Close()
 	result := Application{}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("response StatusCode is not 200")
+	}
 	err = jsoniter.Unmarshal(body, &result)
 	if err != nil {
 		fmt.Println(err)
