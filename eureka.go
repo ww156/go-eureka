@@ -156,6 +156,7 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	app, err := e.GetApp(appid)
 	if err != nil {
 		fmt.Println(err)
+		return []string{}
 	}
 	urls := []string{}
 	for _, ins := range app.Application.Instance {
