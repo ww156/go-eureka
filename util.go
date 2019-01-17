@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -28,6 +29,9 @@ var roundtrip = &http.Transport{
 var Client = &http.Client{Timeout: Timeout, Transport: roundtrip}
 
 func checkIp(url string) bool {
+	if !strings.HasPrefix(url, "http") {
+		url = "http://" + url
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return false

@@ -40,18 +40,18 @@ func (e *Eureka) pickServerUrl() string {
 		panic(errors.New("no valid eureka server."))
 	}
 	if l == 1 {
-		if checkIp(urls[0]) {
+		if checkIp(urls[0] + "/apps") {
 			return urls[0]
 		}
 		panic(errors.New("no valid eureka server."))
 	}
 	r := rand.Intn(l)
 	url := urls[r]
-	if checkIp(url) {
+	if checkIp(url + "/apps") {
 		return url
 	} else {
 		for i := 0; i < l; i++ {
-			if checkIp(urls[i]) {
+			if checkIp(urls[i] + "/apps") {
 				return urls[i]
 			}
 		}
