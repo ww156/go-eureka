@@ -125,7 +125,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	urls := e.ServiceUrls
 	l := len(urls)
 	url := urls[rand.Intn(l)]
-	fmt.Println("GET", url+"/"+appid)
+	//fmt.Println("GET", url+"/"+appid)
 	req, err := http.NewRequest("GET", url+"/apps/"+appid, nil)
 	if err != nil {
 		return nil, err
@@ -140,7 +140,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
