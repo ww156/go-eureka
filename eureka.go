@@ -144,7 +144,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("response StatusCode is not 200")
+		return nil, errors.New("response StatusCode is not 200，but " + strconv.Itoa(resp.StatusCode))
 	}
 	err = jsoniter.Unmarshal(body, &result)
 	if err != nil {
@@ -157,6 +157,10 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 // 获取APP url列表
 func (e *Eureka) GetAppUrls(appid string) []string {
 	app, err := e.GetApp(appid)
+	for err != nil {
+		fmt.Println(err)
+		app, err = e.GetApp(appid)
+	}
 	if err != nil {
 		fmt.Println(err)
 		return []string{}
