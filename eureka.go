@@ -165,9 +165,9 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	for _, ins := range app.Application.Instance {
 		if ins.Status == "UP" {
 			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
-			if checkIp(ins.HealthCheckUrl) {
-				urls = append(urls, url)
-			}
+			//if checkIp(ins.HealthCheckUrl) {
+			urls = append(urls, url)
+			//}
 		}
 	}
 	if len(urls) == 0 {
