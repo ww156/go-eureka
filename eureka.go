@@ -181,7 +181,7 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 		}
 	}
 	if len(urls) == 0 {
-		panic(errors.New("no valid url."))
+		return []string{}
 	}
 	return urls
 }
