@@ -34,7 +34,9 @@ func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 }
 
 func (e *Eureka) pickServerUrl() string {
+	fmt.Println("ssssssss")
 	urls := e.ServiceUrls
+	fmt.Println("aaaaaaaaaaa")
 	l := len(urls)
 	if l == 0 {
 		fmt.Println(1111111)
