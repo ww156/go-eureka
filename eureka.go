@@ -128,6 +128,7 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 // 获取APP
 func (e *Eureka) GetApp(appid string) (*Application, error) {
 	fmt.Println("1234")
+	fmt.Println(e)
 	url := e.pickServerUrl()
 	fmt.Println("GET", url+"/"+appid)
 	req, err := http.NewRequest("GET", url+"/apps/"+appid, nil)
