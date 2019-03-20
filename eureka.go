@@ -34,19 +34,15 @@ func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 }
 
 func (e *Eureka) pickServerUrl() string {
-	fmt.Println("ssssssss")
 	urls := e.ServiceUrls
-	fmt.Println("aaaaaaaaaaa")
 	l := len(urls)
 	if l == 0 {
-		fmt.Println(1111111)
 		panic(errors.New("no valid eureka server."))
 	}
 	if l == 1 {
 		if checkIp(urls[0] + "/apps") {
 			return urls[0]
 		}
-		fmt.Println(1111111)
 		panic(errors.New("no valid eureka server."))
 	}
 	r := rand.Intn(l)
@@ -60,7 +56,6 @@ func (e *Eureka) pickServerUrl() string {
 			}
 		}
 	}
-	fmt.Println(1111111)
 	panic(errors.New("no valid eureka server."))
 }
 
@@ -127,10 +122,8 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 
 // 获取APP
 func (e *Eureka) GetApp(appid string) (*Application, error) {
-	fmt.Println("1234")
-	fmt.Println(e)
 	url := e.pickServerUrl()
-	fmt.Println("GET", url+"/"+appid)
+	//fmt.Println("GET", url+"/"+appid)
 	req, err := http.NewRequest("GET", url+"/apps/"+appid, nil)
 	if err != nil {
 		return nil, err
@@ -145,7 +138,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
