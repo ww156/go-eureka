@@ -45,6 +45,7 @@ func (e *Eureka) pickServerUrl() string {
 		}
 		panic(errors.New("no valid eureka server."))
 	}
+	rand.Seed(time.Now().UnixNano())
 	r := rand.Intn(l)
 	url := urls[r]
 	if checkIp(url + "/apps") {
