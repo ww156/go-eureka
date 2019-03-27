@@ -62,7 +62,7 @@ func (e *Eureka) pickServerUrl() string {
 
 // 注册实例
 func (e *Eureka) RegisterInstane(i *Instance) error {
-	url := e.pickServerUrl()
+	urls := e.ServiceUrls
 	i.Init()
 	// Instance数据构建
 	app := App{
@@ -72,19 +72,23 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", url+"/apps/"+i.App, bytes.NewReader(data))
-	req.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		return err
+
+	for _, url := range urls {
+		req, err := http.NewRequest("POST", url+"/apps/"+i.App, bytes.NewReader(data))
+		req.Header.Set("Content-Type", "application/json")
+		if err != nil {
+			fmt.Println(err)
+		}
+		res, err := e.Client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer res.Body.Close()
+		if res.StatusCode != 204 {
+			fmt.Println("server " + url + " is't" + " registed")
+		}
 	}
-	res, err := e.Client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	if res.StatusCode != 204 {
-		return errors.New(strconv.Itoa(res.StatusCode))
-	}
+
 	return nil
 }
 
@@ -99,7 +103,10 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 		for {
 			select {
 			case <-ticker.C:
-				req, err := http.NewRequest("PUT", urls[0]+"/apps/"+i.App+"/"+i.InstanceId, nil)
+				l := len(urls)
+				rand.Seed(time.Now().UnixNano())
+				n := rand.Intn(l)
+				req, err := http.NewRequest("PUT", urls[n]+"/apps/"+i.App+"/"+i.InstanceId, nil)
 				if err != nil {
 					fmt.Println(err)
 				}
