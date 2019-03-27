@@ -78,10 +78,12 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		res, err := e.Client.Do(req)
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		defer res.Body.Close()
 		if res.StatusCode != 204 {
