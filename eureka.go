@@ -111,10 +111,12 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 				req, err := http.NewRequest("PUT", urls[n]+"/apps/"+i.App+"/"+i.InstanceId, nil)
 				if err != nil {
 					fmt.Println(err)
+					continue
 				}
 				res, err := e.Client.Do(req)
 				if err != nil {
 					fmt.Println(err)
+					continue
 				}
 				res.Body.Close()
 				statusCode := res.StatusCode
