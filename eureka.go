@@ -105,6 +105,10 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 		for {
 			select {
 			case <-ticker.C:
+				defer func() {
+					recover()
+					fmt.Println("SendHeartBeat Error.")
+				}()
 				l := len(urls)
 				rand.Seed(time.Now().UnixNano())
 				n := rand.Intn(l)
