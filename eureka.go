@@ -37,13 +37,15 @@ func (e *Eureka) pickServerUrl() string {
 	urls := e.ServiceUrls
 	l := len(urls)
 	if l == 0 {
-		panic(errors.New("no valid eureka server."))
+		return ""
+		//panic(errors.New("no valid eureka server."))
 	}
 	if l == 1 {
 		if checkIp(urls[0] + "/apps") {
 			return urls[0]
 		}
-		panic(errors.New("no valid eureka server."))
+		return ""
+		//panic(errors.New("no valid eureka server."))
 	}
 	rand.Seed(time.Now().UnixNano())
 	r := rand.Intn(l)
@@ -57,7 +59,8 @@ func (e *Eureka) pickServerUrl() string {
 			}
 		}
 	}
-	panic(errors.New("no valid eureka server."))
+	return ""
+	//panic(errors.New("no valid eureka server."))
 }
 
 // 注册实例
