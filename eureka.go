@@ -165,10 +165,8 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	}
 	err = jsoniter.Unmarshal(body, &result)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(result)
 	return &result, nil
 }
 
@@ -178,7 +176,6 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	n := 0
 	for err != nil {
 		n += 1
-		fmt.Println(err)
 		time.Sleep(time.Millisecond * 200)
 		app, err = e.GetApp(appid)
 		if n > 10 {
@@ -186,14 +183,12 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 		}
 	}
 	if err != nil {
-		fmt.Println(err)
 		return []string{}
 	}
 	urls := []string{}
 	for _, ins := range app.Application.Instance {
 		if ins.Status == "UP" {
 			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
-			fmt.Println(url)
 			if checkIp(ins.HealthCheckUrl) {
 				urls = append(urls, url)
 			}
