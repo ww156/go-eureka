@@ -168,6 +168,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 		fmt.Println(err)
 		return nil, err
 	}
+	fmt.Println(result)
 	return &result, nil
 }
 
@@ -192,6 +193,7 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	for _, ins := range app.Application.Instance {
 		if ins.Status == "UP" {
 			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
+			fmt.Println(url)
 			if checkIp(ins.HealthCheckUrl) {
 				urls = append(urls, url)
 			}
