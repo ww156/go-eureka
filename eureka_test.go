@@ -28,7 +28,7 @@ func TestRegisterApp(t *testing.T) {
 		},
 	}
 
-	serverUrls := []string{"http://localhost:8761/eureka"}
+	serverUrls := []string{"http://192.168.1.19:1111/eureka"}
 	e, err := NewEureka(serverUrls, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -44,7 +44,7 @@ func TestRegisterApp(t *testing.T) {
 }
 
 func TestGetApp(t *testing.T) {
-	serverUrls := []string{"http://localhost:8761/eureka"}
+	serverUrls := []string{"http://192.168.1.19:1111/eureka"}
 	e, err := NewEureka(serverUrls, nil)
 	if err != nil {
 		t.Fatal(err)

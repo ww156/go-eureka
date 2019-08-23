@@ -14,11 +14,13 @@ import (
 )
 
 type Eureka struct {
-	ServiceUrls []string
-	Client      *http.Client
-	Json        bool
+	ServiceUrls    []string
+	Client         *http.Client
+	Json           bool
+	AppHealthCheck bool // 是否检测每个服务的可用性
 }
 
+// 创建Eureka
 func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 	if len(serverUrls) == 0 {
 		return nil, errors.New("missing eureka url.")
@@ -33,12 +35,12 @@ func NewEureka(serverUrls []string, client *http.Client) (*Eureka, error) {
 	return eureka, nil
 }
 
+// 选择一个可用服务器
 func (e *Eureka) pickServerUrl() string {
 	urls := e.ServiceUrls
 	l := len(urls)
 	if l == 0 {
 		return ""
-		//panic(errors.New("no valid eureka server."))
 	}
 	if l == 1 {
 		if checkIp(urls[0] + "/apps") {
@@ -54,8 +56,10 @@ func (e *Eureka) pickServerUrl() string {
 		return url
 	} else {
 		for i := 0; i < l; i++ {
-			if checkIp(urls[i] + "/apps") {
-				return urls[i]
+			if i != r {
+				if checkIp(urls[i] + "/apps") {
+					return urls[i]
+				}
 			}
 		}
 	}
@@ -78,20 +82,21 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 
 	for _, url := range urls {
 		req, err := http.NewRequest("POST", url+"/apps/"+i.App, bytes.NewReader(data))
-		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
+		req.Header.Set("Content-Type", "application/json")
+
 		res, err := e.Client.Do(req)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
 		if res.StatusCode != 204 {
 			fmt.Println("server " + url + " is't" + " registed")
 		}
+		res.Body.Close()
 	}
 
 	return nil
@@ -142,7 +147,6 @@ func (e *Eureka) SendHeartBeat(i *Instance, duration time.Duration) {
 // 获取APP
 func (e *Eureka) GetApp(appid string) (*Application, error) {
 	url := e.pickServerUrl()
-	//fmt.Println("GET", url+"/"+appid)
 	req, err := http.NewRequest("GET", url+"/apps/"+appid, nil)
 	if err != nil {
 		return nil, err
@@ -157,7 +161,7 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Println(string(body))
+	fmt.Println(string(body))
 	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
@@ -189,7 +193,11 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	for _, ins := range app.Application.Instance {
 		if ins.Status == "UP" {
 			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
-			if checkIp(ins.HealthCheckUrl) {
+			if e.AppHealthCheck {
+				if checkIp(ins.HealthCheckUrl) {
+					urls = append(urls, url)
+				}
+			} else {
 				urls = append(urls, url)
 			}
 		}
