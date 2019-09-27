@@ -161,7 +161,6 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
 	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
