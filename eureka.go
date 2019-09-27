@@ -93,10 +93,10 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 			fmt.Println(err)
 			continue
 		}
+		defer res.Body.Close()
 		if res.StatusCode != 204 {
 			fmt.Println("server " + url + " is't" + " registed")
 		}
-		res.Body.Close()
 	}
 
 	return nil
@@ -157,11 +157,11 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	resp.Body.Close()
 	result := Application{}
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("response StatusCode is not 200，but " + strconv.Itoa(resp.StatusCode))
