@@ -179,7 +179,7 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 	n := 0
 	for err != nil {
 		n += 1
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Millisecond * 30)
 		app, err = e.GetApp(appid)
 		if n > 100 {
 			break
