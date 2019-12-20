@@ -176,14 +176,9 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 // 获取APP url列表
 func (e *Eureka) GetAppUrls(appid string) []string {
 	app, err := e.GetApp(appid)
-	n := 0
 	for err != nil {
-		n += 1
 		time.Sleep(time.Millisecond * 200)
 		app, err = e.GetApp(appid)
-		if n > 10 {
-			break
-		}
 	}
 	if err != nil {
 		return []string{}
