@@ -175,32 +175,36 @@ func (e *Eureka) GetApp(appid string) (*Application, error) {
 
 // 获取APP url列表
 func (e *Eureka) GetAppUrls(appid string) []string {
-	ch := make(chan []string)
-	go func(){
-		app, err := e.GetApp(appid)
-		for err != nil {
-			time.Sleep(time.Millisecond * 200)
-			app, err = e.GetApp(appid)
+	app, err := e.GetApp(appid)
+	n := 0
+	for err != nil {
+		n += 1
+		time.Sleep(time.Millisecond * 200)
+		app, err = e.GetApp(appid)
+		if n > 100 {
+			break
 		}
-		urls := []string{}
-		for _, ins := range app.Application.Instance {
-			if ins.Status == "UP" {
-				url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
-				if e.AppHealthCheck {
-					if checkIp(ins.HealthCheckUrl) {
-						urls = append(urls, url)
-					}
-				} else {
+	}
+	if err != nil {
+		return []string{}
+	}
+	urls := []string{}
+	for _, ins := range app.Application.Instance {
+		if ins.Status == "UP" {
+			url := ins.IPAddr + ":" + strconv.Itoa(ins.Port.Port)
+			if e.AppHealthCheck {
+				if checkIp(ins.HealthCheckUrl) {
 					urls = append(urls, url)
 				}
+			} else {
+				urls = append(urls, url)
 			}
 		}
-		if len(urls) == 0 {
-			ch<-[]string{}
-		}
-		ch<-urls
-	}()
-	return <-ch
+	}
+	if len(urls) == 0 {
+		return []string{}
+	}
+	return urls
 }
 
 // 删除实例
