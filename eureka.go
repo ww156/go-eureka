@@ -182,9 +182,6 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 			time.Sleep(time.Millisecond * 200)
 			app, err = e.GetApp(appid)
 		}
-		if err != nil {
-			return []string{}
-		}
 		urls := []string{}
 		for _, ins := range app.Application.Instance {
 			if ins.Status == "UP" {
