@@ -81,22 +81,30 @@ func (e *Eureka) RegisterInstane(i *Instance) error {
 		return err
 	}
 
-	for _, url := range urls {
+	l := len(urls)
+	for index, url := range urls {
 		req, err := http.NewRequest("POST", url+"/apps/"+i.App, bytes.NewReader(data))
 		if err != nil {
-			fmt.Println(err)
+			if index == l-1{
+				fmt.Println(err)
+				return err
+			}
 			continue
 		}
 		req.Header.Set("Content-Type", "application/json")
 
 		res, err := e.Client.Do(req)
 		if err != nil {
-			fmt.Println(err)
+			if index == l-1{
+				fmt.Println(err)
+				return err
+			}
 			continue
 		}
 		defer res.Body.Close()
 		if res.StatusCode != 204 {
 			fmt.Println("server " + url + " is't" + " registed")
+			return errors.New("server error")
 		}
 	}
 
