@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/json-iterator/go"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 type Eureka struct {
@@ -186,6 +187,7 @@ func (e *Eureka) GetAppUrls(appid string) []string {
 		}
 	}
 	if err != nil {
+		fmt.Println(err)
 		return []string{}
 	}
 	urls := []string{}
